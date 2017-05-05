@@ -26,11 +26,12 @@ public class Percolation {
                 fulfillCondition[i][j] = 0;
             }
         }
-        weightedQuickUnionUF = new WeightedQuickUnionUF(n);
+        weightedQuickUnionUF = new WeightedQuickUnionUF(((int) Math.pow(n, 2)));
     }
 
     // open site (row, col) if it is not open already
     public void open(int row, int col) {
+        validate(row, col);
         if (!isOpen(row, col)) {
             grid[row - 1][col - 1] = 1;
             openSitesCount++;
@@ -40,15 +41,13 @@ public class Percolation {
 
     // is site (row, col) open?
     public boolean isOpen(int row, int col) {
-        if (row > grid.length || col > grid.length)
-            throw new IllegalArgumentException();
-        if (row < 1 || col <  1)
-            throw new IllegalArgumentException();
+        validate(row, col);
         return grid[row - 1][col - 1] == 1;
     }
 
     // is site (row, col) full?
     public boolean isFull(int row, int col) {
+        validate(row, col);
         return fulfillCondition[row - 1][col - 1] == 1;
     }
 
@@ -59,7 +58,19 @@ public class Percolation {
 
     // does the system percolate?
     public boolean percolates() {
-        return false;
+        int[] topSites = openSitesOnTop();
+        int[] bottomSites = openSitesOnBottom();
+        if (topSites.length == 0 || bottomSites.length == 0)
+            return false;
+        else {
+            for (int topSite : topSites) {
+                for (int bottomSite : bottomSites) {
+                    if (weightedQuickUnionUF.connected(topSite, bottomSite))
+                        return true;
+                }
+            }
+            return false;
+        }
     }
 
     private void printGrid() {
@@ -68,6 +79,7 @@ public class Percolation {
     }
 
     private int getFlatten(int row, int col) {
+        validate(row, col);
         return --row * grid.length + col;
     }
 
@@ -90,8 +102,15 @@ public class Percolation {
         //right neighbor
         if (col != grid.length)
             if (isOpen(row, col + 1) && !weightedQuickUnionUF.connected(getFlatten(row, col),
-                     getFlatten(row, col + 1)))
+                    getFlatten(row, col + 1)))
                 weightedQuickUnionUF.union(getFlatten(row, col), getFlatten(row, col + 1));
+    }
+
+    private void validate(int row, int col) {
+        if (row > grid.length || col > grid.length)
+            throw new IllegalArgumentException();
+        if (row < 1 || col < 1)
+            throw new IllegalArgumentException();
     }
 
     private void printFlatten() {
@@ -103,10 +122,54 @@ public class Percolation {
         System.out.println(stringBuilder.toString());
     }
 
+
+    private int[] openSitesOnTop() {
+        int[] openSites;
+        int count = 0;
+        for (int j = 0; j < grid.length; j++)
+            if (isOpen(1, j + 1))
+                count++;
+        openSites = new int[count];
+        if (count == 0) {
+            return openSites;
+        } else {
+            int k = 0;
+            for (int j = 0; j < grid.length; j++)
+                if (isOpen(1, j + 1))
+                    openSites[k] = getFlatten(1, j + 1);
+            return openSites;
+        }
+    }
+
+    private int[] openSitesOnBottom() {
+        int[] openSites;
+        int count = 0;
+        for (int j = 0; j < grid.length; j++)
+            if (isOpen(grid.length, j + 1))
+                count++;
+        openSites = new int[count];
+        if (count == 0) {
+            return openSites;
+        } else {
+            int k = 0;
+            for (int j = 0; j < grid.length; j++)
+                if (isOpen(grid.length, j + 1))
+                    openSites[k] = getFlatten(grid.length, j + 1);
+            return openSites;
+        }
+    }
+
+
     public static void main(String[] argv) {
-        final Percolation percolation = new Percolation(6);
-        percolation.open(1,1);
+        final Percolation percolation = new Percolation(5);
+      /*  percolation.open(1, 3);
+        percolation.open(2, 3);
+        percolation.open(3, 3);
+        percolation.open(4, 3);
+        percolation.open(5, 3);
         percolation.printGrid();
+        percolation.printFlatten();
+        percolation.percolates();*/
     }
 
 }
