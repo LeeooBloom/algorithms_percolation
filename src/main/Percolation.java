@@ -73,14 +73,14 @@ public class Percolation {
         }
     }
 
-    private void printGrid() {
+    public void printGrid() {
         for (int[] i : this.grid)
             System.out.println(Arrays.toString(i));
     }
 
     private int getFlatten(int row, int col) {
         validate(row, col);
-        return --row * grid.length + col;
+        return --row * grid.length + --col;
     }
 
     private void connectNeighbors(int row, int col) {
@@ -113,7 +113,7 @@ public class Percolation {
             throw new IllegalArgumentException();
     }
 
-    private void printFlatten() {
+    public void printFlatten() {
         final StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < grid.length; i++)
             for (int j = 0; j < grid.length; j++)
@@ -135,8 +135,10 @@ public class Percolation {
         } else {
             int k = 0;
             for (int j = 0; j < grid.length; j++)
-                if (isOpen(1, j + 1))
+                if (isOpen(1, j + 1)) {
                     openSites[k] = getFlatten(1, j + 1);
+                    k++;
+                }
             return openSites;
         }
     }
@@ -153,8 +155,10 @@ public class Percolation {
         } else {
             int k = 0;
             for (int j = 0; j < grid.length; j++)
-                if (isOpen(grid.length, j + 1))
+                if (isOpen(grid.length, j + 1)) {
                     openSites[k] = getFlatten(grid.length, j + 1);
+                    k++;
+                }
             return openSites;
         }
     }
@@ -162,14 +166,14 @@ public class Percolation {
 
     public static void main(String[] argv) {
         final Percolation percolation = new Percolation(5);
-      /*  percolation.open(1, 3);
+        percolation.open(1, 3);
         percolation.open(2, 3);
         percolation.open(3, 3);
         percolation.open(4, 3);
         percolation.open(5, 3);
         percolation.printGrid();
         percolation.printFlatten();
-        percolation.percolates();*/
+        percolation.percolates();
     }
 
 }
