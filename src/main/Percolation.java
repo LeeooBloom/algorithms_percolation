@@ -42,7 +42,7 @@ public class Percolation {
     // is site (row, col) full?
     public boolean isFull(int row, int col) {
         validate(row, col);
-        return fulfillCondition[row - 1][col - 1] == 1;
+        return isOpen(row, col);
     }
 
     // number of open sites
@@ -97,9 +97,9 @@ public class Percolation {
 
     private void validate(int row, int col) {
         if (row > grid.length || col > grid.length)
-            throw new IllegalArgumentException();
+            throw new IndexOutOfBoundsException();
         if (row < 1 || col < 1)
-            throw new IllegalArgumentException();
+            throw new IndexOutOfBoundsException();
     }
 
     private void printFlatten() {
