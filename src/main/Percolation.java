@@ -1,18 +1,12 @@
-package main;
-
-import java.util.Arrays;
-
-import edu.princeton.cs.algs4.StdRandom;
-import edu.princeton.cs.algs4.StdStats;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 @SuppressWarnings("WeakerAccess")
 public class Percolation {
 
-    int openSitesCount = 0;
-    int fulfillCondition[][];
-    int[][] grid;
-    final WeightedQuickUnionUF weightedQuickUnionUF;
+    private int openSitesCount = 0;
+    private int fulfillCondition[][];
+    private int[][] grid;
+    private final WeightedQuickUnionUF weightedQuickUnionUF;
 
     // create n-by-n grid, with all sites blocked
     public Percolation(int n) {
@@ -58,8 +52,8 @@ public class Percolation {
 
     // does the system percolate?
     public boolean percolates() {
-        int[] topSites = openSitesOnTop();
-        int[] bottomSites = openSitesOnBottom();
+        int[] topSites = countOpenSitesOnTop();
+        int[] bottomSites = countOpenSitesOnBottom();
         if (topSites.length == 0 || bottomSites.length == 0)
             return false;
         else {
@@ -71,11 +65,6 @@ public class Percolation {
             }
             return false;
         }
-    }
-
-    public void printGrid() {
-        for (int[] i : this.grid)
-            System.out.println(Arrays.toString(i));
     }
 
     private int getFlatten(int row, int col) {
@@ -113,7 +102,7 @@ public class Percolation {
             throw new IllegalArgumentException();
     }
 
-    public void printFlatten() {
+    private void printFlatten() {
         final StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < grid.length; i++)
             for (int j = 0; j < grid.length; j++)
@@ -123,7 +112,7 @@ public class Percolation {
     }
 
 
-    private int[] openSitesOnTop() {
+    private int[] countOpenSitesOnTop() {
         int[] openSites;
         int count = 0;
         for (int j = 0; j < grid.length; j++)
@@ -143,7 +132,7 @@ public class Percolation {
         }
     }
 
-    private int[] openSitesOnBottom() {
+    private int[] countOpenSitesOnBottom() {
         int[] openSites;
         int count = 0;
         for (int j = 0; j < grid.length; j++)
@@ -161,19 +150,6 @@ public class Percolation {
                 }
             return openSites;
         }
-    }
-
-
-    public static void main(String[] argv) {
-        final Percolation percolation = new Percolation(5);
-        percolation.open(1, 3);
-        percolation.open(2, 3);
-        percolation.open(3, 3);
-        percolation.open(4, 3);
-        percolation.open(5, 3);
-        percolation.printGrid();
-        percolation.printFlatten();
-        percolation.percolates();
     }
 
 }
